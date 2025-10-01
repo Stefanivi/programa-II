@@ -7,11 +7,11 @@
 # 2025
 
 # Integrantes: 
-#Paulo Augusto Garrido Grijalva
-#Stefani María Villeda Guerra
-#Luis Daniel Monroy Rojas
-#David Javier García Sutuj
-
+# - Paulo Augusto Garrido Grijalva
+# - Stefani María Villeda Guerra
+# - Luis Daniel Monroy Rojas
+# - David Javier García Sutuj
+# **Nota: Todas las respuestas estan al final**
 #========================================================
 # Ejercicio 1
 #========================================================
@@ -25,10 +25,10 @@ library(numDeriv)
 #-------------------------
 # Parámetros del modelo
 #-------------------------
-eps   <- 2        # ε > 1  (curvatura de la utilidad)
-alpha <- 1.2        # α > 0  (peso relativo del ocio)
-kappa <- 0.6      # 0 < κ ≤ 1 (elasticidad del ocio)U_star <- U_L(L_star, eps, alpha, kappa, w)
-w     <- 2        # salario > 0
+eps   <- 3        # ε > 1  (curvatura de la utilidad)
+alpha <- 2        # α > 0  (peso relativo del ocio)
+kappa <- 0.8      # 0 < κ ≤ 1 (elasticidad del ocio)U_star <- U_L(L_star, eps, alpha, kappa, w)
+w     <- 1        # salario > 0
 
 #-------------------------
 # 1) Optimizando g(L), buscando solución interior
@@ -143,6 +143,7 @@ simulacion_montecarlo <- function(num_simulaciones, p_def_frank = 0.5) {
     
     #Probabilidad de que Frank gane partido
     
+    #contadores
     win_frank <- 0
     win_mou <- 0
     empates <- 0
@@ -153,6 +154,7 @@ simulacion_montecarlo <- function(num_simulaciones, p_def_frank = 0.5) {
         goles_mou = 0
         for (j in 1:90) {
             
+            #probabilidades aleatorias de que cada uno juegue a la defensiva
             rnd_frank <- runif(1)
             rnd_mou <- runif(1)
             
@@ -213,5 +215,24 @@ graficar_probabilidades_frank <- function(paso = 0.1) {
     
 }
 
+simulacion_montecarlo(10000) # Out: 56.23
+#Resultado: Probabilidad de que frank gane es 56.2% con 10k simulaciones
+
+simulacion_montecarlo(1000, 0.3) # Out: 67.8
+simulacion_montecarlo(1000, 0.2) # Out: 69.1
+simulacion_montecarlo(1000, 0.1) # Out: 69.5
+simulacion_montecarlo(1000, 0) # Out: 74.6
 
 
+# RESPUESTAS:
+# Solución numérica de ecuaciones no-lineales
+# 1)   ((w*L)^(1/eps) + alpha*(1 - L)^(kappa/eps))^eps
+# 2)   g'(L) simbólica = (w * L)^((1/eps) - 1) * ((1/eps) * w) - alpha * ((1 - L)^((kappa/eps) - 1) * (kappa/eps))
+# 3)   C*  = w*L* = 0.322162
+#
+# Optimización numérica
+# 1)   Valor optimo de L*=  0.322154320923125
+#
+# Simulación Montecarlo
+# 1)   Probabilidad de que frank gane es 56.2% con 10k simulaciones
+# 2)   La probabilidad de jugar a la defensiva es 0% y tiene una probabilidad de ganar de 73% aprox.
