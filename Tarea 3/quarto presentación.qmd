@@ -1,0 +1,61 @@
+---
+title: "Programación II: Taller 3"
+format: html
+---
+Considere el proceso:
+$$
+y_t = \mu + \rho y_{t-1} + \varepsilon_t
+$$
+
+Donde
+$$
+\varepsilon_t \sim \mathcal{N}(0,\sigma^2)\quad \text{y}\quad y_1 \sim \mathcal{N}\!\left(\frac{\mu}{1-\rho},\, \frac{\sigma^2}{1-\rho^2}\right)
+$$
+
+Para una muestra de tamaño T, la función de log-verosimilitud del anterior proceso esta dada por:
+
+$$
+\begin{aligned}
+\log \mathcal{L}(\theta) 
+&= -\tfrac{1}{2}\log (2\pi) 
+   - \tfrac{1}{2}\log\left(\tfrac{\sigma^2}{1-\rho^2}\right) 
+   - \frac{\left(y_1 - \tfrac{\mu}{1-\rho}\right)^2}{2\sigma^2/(1-\rho^2)} \\[6pt]
+&\quad - \tfrac{(T-1)}{2}\log (2\pi) - \tfrac{(T-1)}{2}\log (\sigma^2) - \sum_{t=2}^T \frac{(y_t - \mu - \rho y_{t-1})^2}{2\sigma^2}
+\end{aligned}
+$$
+
+
+
+<!-- $$
+\log \mathcal{L}(\theta) 
+= -\tfrac{1}{2}\log (2\pi) 
+- \tfrac{1}{2}\log\left(\tfrac{\sigma^2}{1-\rho^2}\right) 
+- \frac{\left(y_1 - \tfrac{\mu}{1-\rho}\right)^2}{2\sigma^2/(1-\rho^2)} 
+- \tfrac{(T-1)}{2}\log (2\pi) 
+- \tfrac{(T-1)}{2}\log (\sigma^2) 
+- \sum_{t=2}^T \frac{(y_t - \mu - \rho y_{t-1})^2}{2\sigma^2}
+$$ -->
+
+Bajo ciertas condiciones de regularidad, el estimador de máxima verosimilitud converge en distribución:
+
+$$
+\sqrt{T}\,(\hat{\theta} - \theta_0) \;\;\xrightarrow{d}\;\; \mathcal{N}(0, J_1^{-1})
+$$
+
+Donde 0 is valor poblacional de y J1 es la matriz de segundas derivadas de la función de verosimilitud 
+
+$$
+J_1 = E[-H(\theta)] \;=\; -E\!\left[ \frac{\partial^2 \log \mathcal{L}(\theta)}{\partial \theta \,\partial \theta^T} \right]
+$$
+
+Bajo condiciones de regularidad adicionales, esta matriz se puede estimar de forma consistente usando su contraparte muestral:
+$$
+\hat{J}_1 \;=\; -\frac{1}{T} 
+\left. \frac{\partial^2 \log \mathcal{L}(\theta)}{\partial \theta \,\partial \theta^T} \right|_{\theta=\hat{\theta}}
+$$
+
+Se tiene entonces que
+
+$$
+\hat{\theta} \;\approx\; \mathcal{N}\!\left(\theta_0,\; \frac{1}{T}\,\hat{J}_1^{-1}\right)
+$$
