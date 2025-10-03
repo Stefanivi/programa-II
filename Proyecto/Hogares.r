@@ -13,11 +13,11 @@ library(readr)
 graphics.off()
 rm(list=ls())
 cat("\014")
-setwd("/Users/stefanivilleda/Desktop/Programación II/Proyecto/programa-II/Proyecto/input/")
+setwd("/Users/stefanivilleda/Desktop/Programación II/Proyecto/programa-II/Proyecto/")
 #Carga de base Hogares
 
-hogares <- read_excel("ENCOVI_hogares.xlsx")
-equipamiento <- read_excel("Equipamiento.xlsx")
+hogares <- read_excel("./input/ENCOVI_hogares.xlsx")
+equipamiento <- read_excel("./input/Equipamiento.xlsx")
 
 
 #Ver las variables
@@ -90,5 +90,5 @@ base_final <- variables_hog %>%
     left_join(variables_equip, by = c("depto", "area", "factor", "no_hogar"))
 base_final
 
-write_csv(base_final, "hogares_clean.csv")
+write_csv(base_final, "./output/hogares_clean.csv")
 

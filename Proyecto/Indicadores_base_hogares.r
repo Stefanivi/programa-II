@@ -12,7 +12,7 @@ library(readr)
 graphics.off()
 rm(list=ls())
 cat("\014")
-setwd("/Users/stefanivilleda/Desktop/Programación II/Proyecto/programa-II/Proyecto/input/")
+setwd("/Users/stefanivilleda/Desktop/Programación II/Proyecto/programa-II/Proyecto/output/")
 #Carga de base Hogares
 
 hogares_clean <- read_csv("hogares_clean.csv")
