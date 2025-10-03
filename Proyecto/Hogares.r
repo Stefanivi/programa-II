@@ -1,9 +1,11 @@
 # Es buena practica cargar las librerías que se utilizaran al inicio
-library(dplyr)
-library(readr)
-library(lubridate)
-library(stringr)
 library(readxl)
+library("dplyr")
+library("stringr")
+library("magrittr")
+library("tidyverse")
+library(lubridate)
+library(readr)
 
 
 
@@ -12,12 +14,12 @@ library(readxl)
 graphics.off()
 rm(list=ls())
 cat("\014")
-setwd("/Users/stefanivilleda/Desktop/Programación II/Proyecto/")
+setwd("/Users/stefanivilleda/Desktop/Programación II/Proyecto/programa-II/Proyecto/input/")
 #Carga de base Hogares
 
-hogares <- read_excel("Base_hogares.xlsx")
+hogares <- read_excel("ENCOVI_hogares.xlsx")
 equipamiento <- read_excel("Equipamiento.xlsx")
-View(hogares)
+
 
 #Ver las variables
 nombre_variables <- names(hogares)
@@ -41,7 +43,6 @@ variables <- variables |>
 
 
 str(variables)
-#Cambiar los numeros de depto por el nombre  
 
 
 #recuento de hogares con internet residencial 
@@ -55,13 +56,12 @@ variables %>%
                   sum(factor[internet_residencial == 2]))
 
 
-#recuento de hogares con internet residencial por departamento 
-
-variables %>%
-    filter(internet_residencial == 1) %>% #si
+#Tabla de resultados con recuento_si y recuento_no
+tabla_resultados <- variables %>%
     group_by(depto) %>%
-    summarise(recuento = sum(factor)) %>%
-    arrange((depto))
-
-
-
+    summarise(
+        recuento_si = sum(factor[internet_residencial == 1]),
+        recuento_no = sum(factor[internet_residencial == 2])
+    ) %>%
+    arrange(depto)
+tabla_resultados
