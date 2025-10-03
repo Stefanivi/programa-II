@@ -6,7 +6,8 @@ library("magrittr")
 library("tidyverse")
 library(lubridate)
 library(readr)
-library(writexl)
+
+
 # Es buena practica comenzar por limpiar el entorno de trabajo, cerrar
 # cualquier gráfico abierto y limpiar la consola
 graphics.off()
@@ -72,55 +73,21 @@ variables_equip <- variables_equip %>%
     filter(tiene_equipamiento == 1 & 
                (str_detect(desc_equip, regex("Computadora de escritorio", ignore_case = TRUE)) |
                     str_detect(desc_equip, regex("Computadora laptop", ignore_case = TRUE))))
+#Quiero que si el hogar se repite para computadora de escritorio o computadora laptop, se una en una sola fila como computadora de escritorio
+variables_equip <- variables_equip %>%
+    group_by(depto, area, factor, no_hogar) %>%
+    summarise(
+        tiene_equipamiento = first(tiene_equipamiento),
+        desc_equip = paste(unique(desc_equip), collapse = " y ")
+    ) %>%
+    ungroup()
+variables_equip
 
 
 #Ahora voy a unir las dos bases, utilizando toda la de variables_hog quiero agregar las variables de tiene_equipamiento y desc_equip según el núm hogares
 base_final <- variables_hog %>%
-    left_join(variables_equip, by = c("no_hogar"),
-              relationship = "one-to-one")  # dplyr >= 1.1: avisa si hay duplicados
-View(base_final)
-
-
-
-
-
-
+    left_join(variables_equip, by = c("depto", "area", "factor", "no_hogar"))
+base_final
 
 write_csv(base_final, "hogares_clean.csv")
-
-
-
-
-#recuento de hogares totales con internet residencial 
-variables_hog %>% 
-    summarise(recuento_si = 
-                  sum(factor[internet_residencial == 1]))
-
-
-#recuento de hogares totales SIN internet residencial 
-variables_hog %>% 
-    summarise(recuento_no = 
-                  sum(factor[internet_residencial == 2]))
-
-
-#Tabla de resultados con recuento_si y recuento_no
-tabla_resultados <- variables_hog %>%
-    group_by(depto) %>%
-    summarise(
-        recuento_si = sum(factor[internet_residencial == 1]),
-        recuento_no = sum(factor[internet_residencial == 2])
-    ) %>%
-    arrange(depto)
-tabla_resultados
-
-#Calcular porcentaje de hogares con internet residencial
-tabla_resultados <- tabla_resultados %>%
-    mutate(
-        total_hogares = recuento_si + recuento_no,
-        porcentaje_internet = round((recuento_si / total_hogares) * 100, 2)
-    )
-tabla_resultados
-
-
-
 
