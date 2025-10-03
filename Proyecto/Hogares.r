@@ -73,6 +73,7 @@ variables_equip <- variables_equip %>%
     filter(tiene_equipamiento == 1 & 
                (str_detect(desc_equip, regex("Computadora de escritorio", ignore_case = TRUE)) |
                     str_detect(desc_equip, regex("Computadora laptop", ignore_case = TRUE))))
+
 #Quiero que si el hogar se repite para computadora de escritorio o computadora laptop, se una en una sola fila como computadora de escritorio
 variables_equip <- variables_equip %>%
     group_by(depto, area, factor, no_hogar) %>%
