@@ -55,26 +55,11 @@ log_verosimilitud <- function(theta, y) {
                  )
     return(-resultado)
 }
+
 ```
-
-2.  Genere el vector $\varepsilon_t$ y el valor inicial $y_1$, y simule $T = 100$ observaciones del proceso $y_t$ con los parámetros $\mu = 1$, $\rho = 0.4$ y $\sigma^2 = 0.5$
-
-Valor iniciar $y_1$
-
+función de para simular yt
 ```{r}
 set.seed(1)
-mu <- 1
-rho <- 0.4
-sigma2 <- 0.5
-y_1<-rnorm(1, mu/(1-rho), sd=sqrt(sigma2/(1-rho^2)))
-y_1
-
-```
-
-Vector de epsilon:
-
-```{r}
-
 simular_y <- function() {
     T <- 100
     mu <- 1
@@ -95,13 +80,33 @@ simular_y <- function() {
     return(y)
 }
 
+
+```
+2.  Genere el vector $\varepsilon_t$ y el valor inicial $y_1$, y simule $T = 100$ observaciones del proceso $y_t$ con los parámetros $\mu = 1$, $\rho = 0.4$ y $\sigma^2 = 0.5$
+
+Valor iniciar $y_1$
+
+```{r}
 set.seed(1)
-vector_epsilon<-simular_y()
+T <- 100
+mu <- 1
+rho <- 0.4
+sigma2 <- 0.5
+y_1<-rnorm(1, mu/(1-rho), sd=sqrt(sigma2/(1-rho^2)))
+y_1
+
+```
+
+Vector de epsilon:
+
+```{r}
+set.seed(1)
+vector_epsilon <- rnorm(T, mean=0, sd=sqrt(sigma2))
 vector_epsilon
 ```
 3.  Use una función de optimización numérica para encontrar el estimador de máxima verosimilitud $\hat{\theta} = [\hat{\mu}, \hat{\rho}, \hat{\sigma}^2]$, definido como el vector de parámetros que maximiza la función de log-verosimilitud dados los datos simulados en el punto anterior. (Use como valores iniciales el vector $\theta = [0.5, 0.5, 0.5]'$).
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, warning=FALSE}
 #Función de optimización de máxima verosimilitud 
 simular_optim <- function(y) {
     theta_inicial <- c(0.5, 0.5, 0.5)
@@ -119,7 +124,8 @@ simular_optim <- function(y) {
 ```
 
 ```{r,warning=FALSE}
-theta_simulado <- simular_optim(vector_epsilon)
+set.seed(1)
+theta_simulado <- simular_optim(simular_y())
 theta_simulado$par
 ```
 
