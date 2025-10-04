@@ -17,16 +17,14 @@ setwd("/Users/stefanivilleda/Desktop/Programación II/Proyecto/programa-II/Proy
 
 
 # ============================
-# 1) Rutas y lectura
+# 1)lectura
 # ============================
-path_radiobases     <- "./input/Radiobases.xlsx"
-path_telefonia_fija <- "./input/Telefonía fija.xlsx"
 
 # Radiobases: la hoja "2023" trae 2 filas cabecera -> usar skip = 2
-radiobases <- read_excel(path_radiobases, sheet = "2023", skip = 2)
+radiobases <- read_excel("./input/Radiobases.xlsx", sheet = "2023", skip = 2)
 
 # Telefonía fija: hoja por defecto; tiene columna "Departamento" y columna "2023"
-telefonia  <- read_excel(path_telefonia_fija)
+telefonia  <- read_excel("./input/Telefonía fija.xlsx")
 
 # ============================
 # 2) Helpers para limpiar depto
@@ -106,11 +104,39 @@ tabla_2023 <- radiobases_2023 %>%
 # ============================
 # 6) (Opcional) Presentación con tildes
 # ============================
-tabla_2023_pretty <- tabla_2023 %>%
+tabla_2023_final <- tabla_2023 %>%
     left_join(lookup_pretty, by = "departamento") %>%
     mutate(departamento = coalesce(departamento_pretty, departamento)) %>%
     select(-departamento_pretty)
 
-tabla_2023_pretty
+tabla_2023_final
 
-write_csv(tabla_2023_pretty, "./output/radiobases_lineas_telef.csv")
+#Cambiar nombres
+tabla_2023_final <- tabla_2023_final %>%
+    rename(
+        1 = Guatemala,
+        2 = Progreso,
+        3 =	Sacatepéquez,
+        4 =	Chimaltenango,
+        5 =	Escuintla,
+        6 =	`Santa Rosa`,
+        7 =	Sololá,
+        8 =	Totonicapán,
+        9 =	Quetzaltenango,
+        10 = Suchitepéquez,
+        11 = Retalhuleu,
+        12 = `San Marcos`,
+        13 = Huehuetenango,
+        14 = Quiché,
+        15 = `Baja Verapaz`,
+        16 = `Alta Verapaz`,
+        17 = Petén,
+        18 = Izabal,
+        19 = Zacapa,
+        20 = Chiquimula,
+        21 = Jalapa,
+        22 = Jutiapa,
+        
+    )
+
+write_csv(tabla_2023_final, "./output/radiobases_lineas_telef.csv")
