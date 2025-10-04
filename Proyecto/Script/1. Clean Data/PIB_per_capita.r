@@ -26,6 +26,9 @@ PIB_per_capita
 #Quitandole la primera fila que es el PIB per cpaita de la república
 PIB_per_capita<- PIB_per_capita[-1, ]
 
+write_csv(PIB_per_capita, "./output/PIB_per_capita.csv")
+
+
 #Variable
 PIB_per_capita_var<-PIB_per_capita$PIB_per_capita
 
