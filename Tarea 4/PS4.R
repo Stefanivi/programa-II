@@ -248,7 +248,7 @@ plot_piramide <- ggplot(df_piramide, aes(x = porcentaje, y = grupo_edad, fill = 
         title = "Pirámide de población (%)",
         subtitle = "Datos a nivel nacional",
         x = NULL,
-        y = NULL,
+        y = "Edades",
         fill = ""
     ) +
     theme_minimal() +
