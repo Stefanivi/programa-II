@@ -9,18 +9,18 @@ setwd("/Users/stefanivilleda/Desktop/Programación II/Proyecto/programa-II/Proy
 #Carga de base Hogares
 
 PIB <- read_excel("./input/PIB_per_capita.xlsx")
-?rename
+
 
 PIB<- PIB |>
     rename(
         departamento =`CÓDIGO DEPARTAMENTO`,
         depto = DEPARTAMENTO,
         PIB_per_capita = `PIB per cápita 2023 (US$ al año)`,
-        población= `Población (2023)`  
+        poblacion= `Población (2023)`  
         )
 
 PIB_per_capita<- PIB |>
-    select(departamento,PIB_per_capita)
+    select(departamento,PIB_per_capita, poblacion)
 PIB_per_capita
 
 #Quitandole la primera fila que es el PIB per cpaita de la república

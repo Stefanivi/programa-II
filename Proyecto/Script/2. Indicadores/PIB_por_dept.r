@@ -29,3 +29,38 @@ datos
 
 #Creando variable
 pct_PIB_dpto <- datos$pct_PIB
+
+
+# función min-max a escala 0-100
+minmax_norm <- function(x, better = c("higher", "lower"), na.rm = TRUE) {
+    better <- match.arg(better)
+    if (na.rm) x_non_na <- x[!is.na(x)] else x_non_na <- x
+    xmin <- min(x_non_na, na.rm = TRUE)
+    xmax <- max(x_non_na, na.rm = TRUE)
+    if (is.na(xmin) || is.na(xmax) || (xmax - xmin) == 0) {
+        res <- rep(0, length(x))
+    } else {
+        if (better == "higher") {
+            res <- (x - xmin) / (xmax - xmin) * 100
+        } else {
+            res <- (xmax - x) / (xmax - xmin) * 100
+        }
+    }
+    res[is.na(x)] <- NA
+    return(res)
+}
+
+# aplicar la normalización a la tabla
+datos <- datos %>%
+    mutate(
+        PIB_per_capita_idx = round(minmax_norm(PIB_per_capita, better = "higher", na.rm = TRUE), 2)
+    )
+
+datos <- datos %>%
+    mutate(
+        pct_PIB_idx = round(minmax_norm(pct_PIB, better = "higher", na.rm = TRUE), 2)
+    )
+
+# mostrar las primeras filas para verificar
+head(datos)
+
