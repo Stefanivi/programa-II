@@ -151,16 +151,27 @@ head(df_municipios, 5)
 formula_modelo <- td ~ educ
 modelo <- lm(formula_modelo, data = df_municipios)
 summary(modelo)
+
+# Coeficientes estimados
+b0 <- coef(modelo)[1]
+b1 <- coef(modelo)[2]
+eps <- resid(modelo)
+
+```
+```{r echo=FALSE}
+cat("Modelo estimado:\n")
+cat("td_i = ", round(b0, 4), " + ", round(b1, 4), " * educ_i + eps_i")
+
+
 ```
 
 ::: {pagebreak}
 :::
-
 3. Cree un **diagrama de dispersión** para mostrar la relación entre $td_i$ y $educ_i$,  
 e incluya en la figura la **gráfica de ajuste de la regresión** del punto anterior.
 
 ```{r plot_dispersion}
-#| fig-cap: Diagrama de dispersión años de educación y tasa de desocupados"
+#| fig-cap: Diagrama de dispersión años de educación y tasa de desocupados
 # Diagrama de dispersión de años de educación y tasa de desocupados
 plot_dispersion <- df_municipios |>
     ggplot(aes(x = educ, y = td)) +
