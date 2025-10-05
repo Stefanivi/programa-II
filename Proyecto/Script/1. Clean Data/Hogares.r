@@ -1,9 +1,9 @@
 # Es buena practica cargar las librerías que se utilizaran al inicio
 library(readxl)
-library("dplyr")
-library("stringr")
-library("magrittr")
-library("tidyverse")
+library(dplyr)
+library(stringr)
+library(magrittr)
+library(tidyverse)
 library(lubridate)
 library(readr)
 

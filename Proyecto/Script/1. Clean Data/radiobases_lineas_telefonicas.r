@@ -17,7 +17,7 @@ setwd("/Users/stefanivilleda/Desktop/Programación II/Proyecto/programa-II/Proy
 
 
 # ============================
-# 1)lectura
+# 1)lectura de archivos
 # ============================
 
 # Radiobases: la hoja "2023" trae 2 filas cabecera -> usar skip = 2
@@ -27,7 +27,7 @@ radiobases <- read_excel("./input/Radiobases.xlsx", sheet = "2023", skip = 2)
 telefonia  <- read_excel("./input/Telefonía fija.xlsx")
 
 # ============================
-# 2) Helpers para limpiar depto
+# 2) para limpiar depto
 # ============================
 # Quita tildes (via iconv), borra apóstrofes, compacta espacios y pone Title Case
 to_title_no_accents <- function(x){
@@ -39,14 +39,14 @@ to_title_no_accents <- function(x){
         str_to_title()
 }
 
-# Casos especiales y filas basura comunes
+# Casos especiales y filas basura 
 fix_special_deptos <- function(dep){
     dep %>%
         str_replace(regex("^El\\s+", ignore_case = TRUE), "") %>%  # "El Peten" -> "Peten"
         na_if("Departamento")                                      # elimina filas cabecera
 }
 
-# (Opcional) diccionario para presentar con tildes bonitas
+# diccionario para presentar con tildes bonitas
 lookup_pretty <- tibble::tibble(
     departamento     = c(
         "Alta Verapaz","Baja Verapaz","Chimaltenango","Chiquimula","El Progreso",
@@ -54,7 +54,7 @@ lookup_pretty <- tibble::tibble(
         "Peten","Quetzaltenango","Quiche","Retalhuleu","Sacatepequez","San Marcos",
         "Santa Rosa","Solola","Suchitepequez","Totonicapan","Zacapa"
     ),
-    departamento_pretty = c(
+    departamento_limpio = c(
         "Alta Verapaz","Baja Verapaz","Chimaltenango","Chiquimula","El Progreso",
         "Escuintla","Guatemala","Huehuetenango","Izabal","Jalapa","Jutiapa",
         "Petén","Quetzaltenango","Quiché","Retalhuleu","Sacatepéquez","San Marcos",
@@ -102,41 +102,45 @@ tabla_2023 <- radiobases_2023 %>%
     arrange(departamento)
 
 # ============================
-# 6) (Opcional) Presentación con tildes
+# 6) Presentación con tildes
 # ============================
 tabla_2023_final <- tabla_2023 %>%
     left_join(lookup_pretty, by = "departamento") %>%
-    mutate(departamento = coalesce(departamento_pretty, departamento)) %>%
-    select(-departamento_pretty)
+    mutate(departamento = coalesce(departamento_limpio, departamento)) %>%
+    select(-departamento_limpio)
 
 tabla_2023_final
 
 #Cambiar nombres
+tabla_2023_final<- tabla_2023_final %>%
+    mutate(departamento = recode(departamento,
+                          "Guatemala" = 1,
+                          "Progreso" = 2,
+                          "Sacatepéquez" = 3,
+                          "Chimaltenango" = 4,
+                          "Escuintla" = 5,
+                          "Santa Rosa" = 6,
+                          "Sololá" = 7,
+                          "Totonicapán" = 8,
+                          "Quetzaltenango" = 9,
+                          "Suchitepéquez" = 10,
+                          "Retalhuleu" = 11,
+                          "San Marcos" = 12,
+                          "Huehuetenango" = 13,
+                          "Quiché" = 14,
+                          "Baja Verapaz" = 15,
+                          "Alta Verapaz" = 16,
+                          "Petén" = 17,
+                          "Izabal" = 18,
+                          "Zacapa" = 19,
+                          "Chiquimula" = 20,
+                          "Jalapa" = 21,
+                          "Jutiapa" = 22))
+
+#ordenando:
 tabla_2023_final <- tabla_2023_final %>%
-    rename(
-        1 = Guatemala,
-        2 = Progreso,
-        3 =	Sacatepéquez,
-        4 =	Chimaltenango,
-        5 =	Escuintla,
-        6 =	`Santa Rosa`,
-        7 =	Sololá,
-        8 =	Totonicapán,
-        9 =	Quetzaltenango,
-        10 = Suchitepéquez,
-        11 = Retalhuleu,
-        12 = `San Marcos`,
-        13 = Huehuetenango,
-        14 = Quiché,
-        15 = `Baja Verapaz`,
-        16 = `Alta Verapaz`,
-        17 = Petén,
-        18 = Izabal,
-        19 = Zacapa,
-        20 = Chiquimula,
-        21 = Jalapa,
-        22 = Jutiapa,
-        
-    )
+    arrange(departamento)
+
+
 
 write_csv(tabla_2023_final, "./output/radiobases_lineas_telef.csv")
