@@ -135,32 +135,27 @@ propor_hogares_computadora<- round(hogares_compu$pct_hogares_compu,2)
 #base de datos externas SIT (Radiobases)
 #----------------------------
 datos_rb <- read_csv("output/radiobases_lineas_telef.csv")
+datos_pib <- read_csv("output/PIB_per_capita.csv")
 head(datos_rb)
 
-# Indicador 8: Proporción de radiobases por cada 1000 habitantes (linea movil)
+# ----------------------------------
+# Indicador 8, 9 y 10
+# ----------------------------------
+# 8: radiobases por cada 100k
+# 9: líneas fijas por cada 1k
+# 10: PIB per capita
 #----------------------------
 
-datos_rb <- datos_rb %>%
+df_radio_pib <- left_join(datos_rb, datos_pib, join_by(departamento))
+df_radio_pib <- df_radio_pib |>
   mutate(
-    pct_radiobases = datos_rb$radiobases_2023 / sum(datos_rb$radiobases_2023),
-    pct_radiobases= round(pct_radiobases * 100, 2)   
+      rb_por_100k = radiobases_2023 / poblacion * 1e5,
+      lineas_por_1k = lineas_fijas_2023 / poblacion * 1e3
   )
-
-#Creando la variable
-pct_radiobases <- datos_rb$pct_radiobases
-
-# ----------------------------
-
-#indicador 9: Proporcion lineas fijas por departamento
-#----------------------------
-tabla_final <- datos_rb %>%
-  mutate(
-    pct_lineas_fijas = datos_rb$lineas_fijas_2023 / sum(datos_rb$lineas_fijas_2023),
-    pct_lineas_fijas= round(pct_lineas_fijas * 100, 2)   
-  )
-
-#Creando la variable
-pct_lineas_fijas <- tabla_final$pct_lineas_fijas
+df_radio_pib <- df_radio_pib |> select(rb_por_100k, 
+                                       lineas_por_1k,
+                                       PIB_per_capita) 
+names(df_radio_pib) <- c("rb_por_100k", "lineas_por_1k", "pib_per_capita")
 
 
 # ----------------------------
@@ -173,9 +168,11 @@ df_indicadores <- data.frame(depto = uso_cel$depto,
                              var_uso_acceso_tel_mov,
                              pct_rural,
                              propor_hogares_internet,
-                             propor_hogares_computadora,
-                             pct_radiobases,
-                             pct_lineas_fijas)
+                             propor_hogares_computadora)
+
+df_indicadores <- cbind(df_indicadores, df_radio_pib)
+
+
 
 # ----------------------------
 # 5) Creando diccionario de variables 
@@ -189,8 +186,9 @@ diccionario_variables <- data.frame(
                "pct_rural",
                "propor_hogares_internet",
                "propor_hogares_computadora",
-               "pct_radiobases",
-               "pct_lineas_fijas"),
+               "rb_por_100k",
+               "lineas_por_1k",
+               "pib percapita"),
   descripcion = c("Departamento",
                   "Proporción de personas que usan teléfono celular por departamento",
                   "Proporción de personas que usan internet por departamento",
@@ -199,8 +197,9 @@ diccionario_variables <- data.frame(
                   "Porcentaje de población rural por departamento",
                   "Proporción de hogares con acceso a internet por departamento",
                   "Proporción de hogares con computadora por departamento",
-                  "Proporción de radiobases por cada 1000 habitantes (línea móvil) por departamento",
-                  "Proporción de líneas fijas por departamento")
+                  "Radiobases por cada 100k habitantes",
+                  "Líneas fijas por cada 1k habitantes",
+                  "PIB per capita")
 )
 
 
@@ -209,6 +208,7 @@ diccionario_variables <- data.frame(
 # 5) Exportando en documento de excel xls
 # ----------------------------
 ??write_xlsx
+
 
 write_xlsx(
 list("indicadores_basicos" = df_indicadores,
