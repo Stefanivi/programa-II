@@ -148,8 +148,7 @@ names(df_radio_pib) <- c("rb_por_100k", "lineas_por_1k", "pib_per_capita")
 # ----------------------------
 # 4) Guardando variables en un data frame
 # ----------------------------
-df_indicadores <- data.frame(depto = uso_cel$depto,
-                             var_uso_cel,
+df_indicadores <- data.frame(depto = uso_intern$depto,
                              var_uso_intern,
                              var_uso_intern_mujeres,
                              var_uso_acceso_tel_mov,
@@ -166,7 +165,6 @@ df_indicadores <- cbind(df_indicadores, df_radio_pib)
 # ----------------------------
 diccionario_variables <- data.frame(
   variable = c("depto",
-               "var_uso_cel",
                "var_uso_intern",
                "var_uso_intern_mujeres",
                "var_uso_acceso_tel_mov",
@@ -177,7 +175,6 @@ diccionario_variables <- data.frame(
                "lineas_por_1k",
                "pib percapita"),
   descripcion = c("Departamento",
-                  "Proporción de personas que usan teléfono celular por departamento",
                   "Proporción de personas que usan internet por departamento",
                   "Proporción de mujeres que usan internet por departamento",
                   "Proporción de personas con acceso a teléfono móvil por departamento",
