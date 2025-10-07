@@ -1,5 +1,5 @@
 
-
+getwd()
 
 
 
@@ -15,31 +15,32 @@ library(tibble)
 library(writexl)
     
 # 1) Tabla de metas/pisos y dirección
-params <- tibble::tribble(
-    ~variable,                 ~better,    ~floor_F,   ~target_T,
-    "var_uso_intern",               "higher",   13.8,        93,
-    "var_uso_intern_mujeres",       "higher",   4.87,        91,
-    "var_uso_acceso_tel_mov",       "higher",   30.85,       94.39,
-    "pct_rural",                    "lower",    83.54,        15,
-    "propor_hogares_internet",      "higher",   2.79,        90.32,
-    "propor_hogares_computadora",   "higher",   3.44,        80.8,
-    "rb_por_100k",                  "higher",   36,          136.16,
-    "lineas_por_1k",                "higher",   8.4,         404.9,
-    "pib_per_capita",                "higher",   1168.69,     14654.9
-)
-
 # params <- tibble::tribble(
 #     ~variable,                 ~better,    ~floor_F,   ~target_T,
-#     "var_uso_intern",               "higher",   13.8,        77,
-#     "var_uso_intern_mujeres",       "higher",   4.87,        72,
-#     "var_uso_acceso_tel_mov",       "higher",   30.85,       83.4,
-#     "pct_rural",                    "lower",    18.2,        2.06,
-#     "propor_hogares_internet",      "higher",   2.79,        66.2,
-#     "propor_hogares_computadora",   "higher",   3.44,        42.91,
-#     "rb_por_100k",                  "higher",   36,          79.43,
+#     "var_uso_intern",               "higher",   13.8,        93,
+#     "var_uso_intern_mujeres",       "higher",   4.87,        91,
+#     "var_uso_acceso_tel_mov",       "higher",   30.85,       94.39,
+#     "pct_rural",                    "lower",    83.54,        15,
+#     "propor_hogares_internet",      "higher",   2.79,        90.32,
+#     "propor_hogares_computadora",   "higher",   3.44,        80.8,
+#     "rb_por_100k",                  "higher",   36,          136.16,
 #     "lineas_por_1k",                "higher",   8.4,         404.9,
 #     "pib_per_capita",                "higher",   1168.69,     14654.9
 # )
+
+#America Latina y el Caribe
+params <- tibble::tribble(
+    ~variable,                 ~better,    ~floor_F,   ~target_T,
+    "var_uso_intern",               "higher",   13.8,        77,
+    "var_uso_intern_mujeres",       "higher",   4.87,        72,
+    "var_uso_acceso_tel_mov",       "higher",   30.85,       83.4,
+    "pct_rural",                    "lower",    83.54,        18.2,
+    "propor_hogares_internet",      "higher",   2.79,        66.2,
+    "propor_hogares_computadora",   "higher",   3.44,        42.91,
+    "rb_por_100k",                  "higher",   36,          79.43,
+    "lineas_por_1k",                "higher",   8.4,         404.9,
+    "pib_per_capita",                "higher",   1168.69,     14654.9
+)
 
 getwd()
 
