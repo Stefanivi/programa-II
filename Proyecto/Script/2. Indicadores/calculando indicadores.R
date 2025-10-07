@@ -136,8 +136,8 @@ head(datos_rb)
 df_radio_pib <- left_join(datos_rb, datos_pib, join_by(departamento))
 df_radio_pib <- df_radio_pib |>
   mutate(
-      rb_por_100k = radiobases_2023 / poblacion * 1e5,
-      lineas_por_1k = lineas_fijas_2023 / poblacion * 1e3
+      rb_por_100k = round(radiobases_2023 / poblacion * 1e5,2),
+      lineas_por_1k = round(lineas_fijas_2023 / poblacion * 1e3,2),
   )
 df_radio_pib <- df_radio_pib |> select(rb_por_100k, 
                                        lineas_por_1k,
