@@ -9,16 +9,15 @@ library(viridis)
 library(ggpubr)
 library(patchwork)
 
-# ── Rutas ──
-# va a buscar la ruta donde estan los mapitas y el archivo Excel de indicadores finales con el indice
-path_shp  <- "C:/Users/Javie/OneDrive/Escritorio/PROGRAMACIÓN II/quarto presentación_files/gadm41_GTM_shp"
+# ── Rutas (AJUSTA estas dos líneas a tu equipo)
+path_shp  <- paste(getwd(), "/Presentación/quarto presentación_files/gadm41_GTM_shp", sep="")
 path_xlsx <- file.path(path_shp, "indicadores_acceso_tecnologico.xlsx")
 
-# ── Utilidades ──
+# ── Utilidades
 norm <- function(x) stringi::stri_trans_general(tolower(x), "Latin-ASCII")
 sanitize <- function(x) gsub("[^A-Za-z0-9_\\-]+", "_", x)
 
-# ── 1) Shapefile GADM nivel 1 (Departamentos) ──
+# ── 1) Shapefile GADM nivel 1 (Departamentos)
 stopifnot(dir.exists(path_shp), file.exists(path_xlsx))
 gadm1 <- sf::st_read(dsn = path_shp, layer = "gadm41_GTM_1", quiet = TRUE) |>
   mutate(NAME_1_norm = norm(NAME_1))
@@ -26,10 +25,10 @@ gadm1 <- sf::st_read(dsn = path_shp, layer = "gadm41_GTM_1", quiet = TRUE) |>
 gadm1 <- gadm1 |>
   mutate(
     NAME_1 = ifelse(NAME_1 == "Quezaltenango", "Quetzaltenango", NAME_1),
-    NAME_1_norm = norm(NAME_1)  
+    NAME_1_norm = norm(NAME_1)  # volver a normalizar después del cambio
   )
 
-# ── 2) Excel: tomar primeras 11 columnas y detectar la de código INE (1..22) ──
+# ── 2) Excel: tomar primeras 11 columnas y detectar la de código INE (1..22)
 df_raw <- readxl::read_xlsx(path_xlsx, .name_repair = "unique")
 df10   <- df_raw[, 1:11]
 
@@ -44,7 +43,7 @@ df10 <- df10 |>
     if (is.character(.x)) readr::parse_number(.x) else .x
   }))
 
-# ── 3) Cruce INE → nombre oficial de depto (para empatar con GADM) ──
+# ── 3) Cruce INE → nombre oficial de depto (para empatar con GADM)
 cruce_ine <- tibble::tibble(
   ine_code = 1:22,
   depto_ine = c(
@@ -58,11 +57,11 @@ cruce_ine <- tibble::tibble(
 
 df10_join <- df10 |> left_join(cruce_ine, by = "ine_code")
 
-# ── 4) Columnas/indicadores a mapear ──
+# ── 4) Columnas/indicadores a mapear (todas menos código)
 indic_cols <- setdiff(names(df10), c(cod_col, "ine_code"))
 stopifnot(length(indic_cols) > 0)
 
-# ── 5) Carpeta de salida y loop: UN MAPA POR INDICADOR ──
+# ── 5) Carpeta de salida y loop: UN MAPA POR INDICADOR
 out_dir <- "mapas_icl2024"
 dir.create(out_dir, showWarnings = FALSE)
 
@@ -99,7 +98,7 @@ for (col in indic_cols) {
       legend.title    = element_text(face = "bold")
     )
   
-  # ----- TOP-10- tabla -----
+  # ----- TOP-10 (tabla estilizada robusta) -----
   fmt <- scales::label_number(accuracy = 0.1, big.mark = ",")
   
   top10 <- df10_join |>
@@ -181,13 +180,13 @@ for (col in indic_cols) {
       }
     }
     
-    # combinar con el mapa 
+    # combinar con el mapa (usar wrap_elements)
     p_final <- (p + theme(legend.position = "bottom")) |
       patchwork::wrap_elements(full = tbl)
     p_final <- p_final + patchwork::plot_layout(widths = c(2.2, 1))
   }
   
-  # ── guardar archivo (8x6 pulgadas, 300 dpi) ──
+  # ── guardar archivo (8x6 pulgadas, 300 dpi)
   ggsave(filename = fname, plot = p_final, width = 8, height = 6, dpi = 300)
   message("✔ Guardado: ", fname)
 }
