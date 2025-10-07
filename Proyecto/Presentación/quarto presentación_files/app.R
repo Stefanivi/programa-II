@@ -9,7 +9,7 @@ norm <- function(x) stringi::stri_trans_general(tolower(x), "Latin-ASCII")
 
 # va a buscar la ruta donde estan los mapitas y el archivo Excel de indicadores finales con el indice
 
-path_shp  <- "C:/Users/Javie/OneDrive/Escritorio/PROGRAMACIÓN II/quarto presentación_files/gadm41_GTM_shp"
+path_shp  <- paste(getwd(), "/Presentación/quarto presentación_files/gadm41_GTM_shp", sep="")
 path_xlsx <- file.path(path_shp, "indicadores_acceso_tecnologico.xlsx")
 
 # ---- Datos base ----
