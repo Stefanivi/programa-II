@@ -173,7 +173,7 @@ diccionario_variables <- data.frame(
                "propor_hogares_computadora",
                "rb_por_100k",
                "lineas_por_1k",
-               "pib percapita"),
+               "pib_per_capita"),
   descripcion = c("Departamento",
                   "Proporción de personas que usan internet por departamento",
                   "Proporción de mujeres que usan internet por departamento",
