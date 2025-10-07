@@ -21,7 +21,9 @@ library(writexl)
 # ----------------------------
 # 2) Cargas de datos
 # ----------------------------
+
 #leer excel con libreria readxl
+
 datos <- read_excel("output/IDX.xlsx")
 datos
 # ----------------------------

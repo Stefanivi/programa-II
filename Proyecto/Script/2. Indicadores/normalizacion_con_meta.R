@@ -37,7 +37,7 @@ params <- tibble::tribble(
     "pct_rural",                    "lower",    83.54,        18.2,
     "propor_hogares_internet",      "higher",   2.79,        66.2,
     "propor_hogares_computadora",   "higher",   3.44,        42.91,
-    "rb_por_100k",                  "higher",   36,          79.43,
+    "rb_por_100k",                  "higher",   36,          200,
     "lineas_por_1k",                "higher",   8.4,         404.9,
     "pib_per_capita",                "higher",   1168.69,     14654.9
 )
@@ -85,5 +85,5 @@ idt <- idt_long %>%
 #   )
 
 write_xlsx(idt,
-    path = "output/idx.xlsx",format_headers = TRUE
+    path = "output/IDX.xlsx",format_headers = TRUE
 )

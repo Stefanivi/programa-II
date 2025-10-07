@@ -142,6 +142,7 @@ El resultado de este proceso será un conjunto de **indicadores normalizados** q
 
 ---
 
+
 ## Autoría y contexto
 
 **Autores:** Paulo Garrido, Stefani Villeda, 
