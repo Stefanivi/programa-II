@@ -1,0 +1,27 @@
+/* ====== AJUSTE GLOBAL DE TAMAÑO ====== */
+
+/* Texto general */
+.reveal p, .reveal li {
+  font-size: 0.9em;     /* Reduce el tamaño del texto general */
+  line-height: 1.4;     /* Mejora el espaciado vertical */
+}
+
+/* Títulos */
+.reveal h1 { font-size: 1.8em; }
+.reveal h2 { font-size: 1.4em; }
+.reveal h3 { font-size: 1.1em; }
+
+/* Código */
+.reveal pre code {
+  font-size: 0.8em;
+  line-height: 1.3;
+  white-space: pre-wrap; /* evita que se desborde */
+}
+
+/* Imágenes */
+.reveal section img {
+  display: block;
+  margin: 0.5rem auto;
+  max-width: 90%;
+  height: auto;
+}
