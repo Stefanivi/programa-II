@@ -138,10 +138,11 @@ df_radio_pib <- df_radio_pib |>
   mutate(
       rb_por_100k = round(radiobases_2023 / poblacion * 1e5,2),
       lineas_por_1k = round(lineas_fijas_2023 / poblacion * 1e3,2),
+      pib_per_capita_rounded = round(PIB_per_capita, 2)
   )
 df_radio_pib <- df_radio_pib |> select(rb_por_100k, 
                                        lineas_por_1k,
-                                       PIB_per_capita) 
+                                       pib_per_capita_rounded)
 names(df_radio_pib) <- c("rb_por_100k", "lineas_por_1k", "pib_per_capita")
 
 
