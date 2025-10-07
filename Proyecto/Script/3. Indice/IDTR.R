@@ -16,8 +16,8 @@ library(readr)
 library(writexl)
 
 
-#setwd("/Users/paulogarridogrijalva/Documents/GitHub/programa-II/Proyecto/")
-#getwd()
+setwd("C:/Users/Javie/OneDrive/Escritorio/PROGRAMACIÓN II/programa-II/Proyecto/")
+getwd()
 # ----------------------------
 # 2) Cargas de datos
 # ----------------------------
