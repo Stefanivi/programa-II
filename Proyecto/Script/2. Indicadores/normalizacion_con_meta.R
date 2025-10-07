@@ -66,24 +66,24 @@ idt_long <- df %>%
 
 
 # 4) Volver a ancho y agregar índice compuesto
-idt_wide <- idt_long %>%
+idt <- idt_long %>%
     pivot_wider(names_from = variable, values_from = ind_var)
 
 # (a) Media aritmética simple
 # media aritmética (todas las columnas excepto 'depto')
-idt <- idt_wide %>%
-    mutate(
-        IDT_media = rowMeans(pick(-depto), na.rm = TRUE)
-    )
-
-# media geométrica (log sobre cada columna, luego promedio y exponenciar)
-eps <- 1e-6
-idt <- idt %>%
-    mutate(
-        IDT_geo = exp(rowMeans(across(-depto, ~ log((.x + eps) / 100)),
-                               na.rm = TRUE)) * 100
-    )
+# idt <- idt_wide %>%
+#     mutate(
+#         IDT_media = rowMeans(pick(-depto), na.rm = TRUE)
+#     )
+# 
+# # media geométrica (log sobre cada columna, luego promedio y exponenciar)
+# eps <- 1e-6
+# idt <- idt %>%
+#     mutate(
+#         IDT_geo = exp(rowMeans(across(-depto, ~ log((.x + eps) / 100)),
+#                                na.rm = TRUE)) * 100
+#   )
 
 write_xlsx(idt,
-    path = "output/INDICADORES_NORMALIZADOS.xlsx",format_headers = TRUE
+    path = "output/idx.xlsx",format_headers = TRUE
 )
