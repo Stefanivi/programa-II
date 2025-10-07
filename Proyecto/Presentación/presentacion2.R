@@ -10,7 +10,7 @@ library(ggpubr)
 library(patchwork)
 
 # ── Rutas (AJUSTA estas dos líneas a tu equipo)
-path_shp  <- "C:/Users/Javie/OneDrive/Escritorio/PROGRAMACIÓN II/quarto presentación_files/gadm41_GTM_shp"
+path_shp  <- paste(getwd(), "/Presentación/quarto presentación_files/gadm41_GTM_shp", sep="")
 path_xlsx <- file.path(path_shp, "indicadores_acceso_tecnologico.xlsx")
 
 # ── Utilidades
