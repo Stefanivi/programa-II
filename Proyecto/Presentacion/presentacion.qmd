@@ -1,32 +1,22 @@
 ---
-title: "Presentacion"
-format: revealjs
-date: today
-format: 
-  revealjs:
-    theme: solarized
-    transition: fade
+title: "Índice de Brecha Regional de Conectividad en Guatemala"
+format:
+  revealjs: 
+    theme: dracula
+
     slide-number: true
-    code-overflow: wrap
-    incremental: true
-    toc: true
 ---
 
-## Quarto
+## Introducción
 
-Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
+La tecnologia constituye un pilar fundamental para el desarrollo económico y social de las naciones, emergiendo como un factor fundamental para reducir las brechas existentes entre diferentes regiones, facilitando el acceso a información, servicios y oportunidades.
 
-## Bullets
+## Objetivo del proyecto
 
-When you click the **Render** button a document will be generated that includes:
+En este sentido, el proyecto se basa en medir el desarrollo tecnologico regional en Guatemala, a través del Índice de Brecha Regional de Conectividad (IBRC), el cual se construye a partir de la integración de diversos indicadores que reflejan el acceso y uso de tecnologías de la información y comunicación (TIC) en distintas áreas geográficas del país.
 
--   Content authored with markdown
--   Output from executable code
+## Estructura del proyecto
 
-## Code
+![Caption](![Caption](/Users/paulogarridogrijalva/Documents/GitHub/programa-II/Proyecto/Archivos de apoyo/Flujo.jpg)
 
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-```{r}
-1 + 1
-```
