@@ -9,7 +9,10 @@ library(viridis)
 library(ggpubr)
 library(patchwork)
 
-# ── Rutas (AJUSTA estas dos líneas a tu equipo)
+# Ajuste de ruta para cargar graficas y datos
+
+setwd("C:/Users/Javie/OneDrive/Escritorio/PROGRAMACIÓN II/programa-II/Proyecto")
+
 path_shp  <- paste(getwd(), "/Presentación/quarto presentación_files/gadm41_GTM_shp", sep="")
 path_xlsx <- file.path(path_shp, "indicadores_acceso_tecnologico.xlsx")
 

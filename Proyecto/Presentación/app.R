@@ -1,3 +1,6 @@
+
+# Primero se carga el archivo presnetacio2 y luego se corre esta app.R
+
 # ---- Paquetes (auto-instala) ----
 pkgs <- c("shiny","leaflet","sf","dplyr","viridisLite","DT","readxl","stringi","htmltools")
 miss <- pkgs[!sapply(pkgs, requireNamespace, quietly = TRUE)]
