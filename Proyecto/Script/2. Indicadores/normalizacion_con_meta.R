@@ -44,7 +44,7 @@ params <- tibble::tribble(
 
 getwd()
 
-df <- read_excel()
+df <- read_excel("output/indicadores_acceso_tecnologico.xlsx")
 
 # 2) Función distancia-a-meta (0–100 con recorte)
 score_target <- function(x, better, F, T) {
