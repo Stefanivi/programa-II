@@ -4,7 +4,7 @@ getwd()
 
 
 rm(list=ls())
-
+setwd("C:/Users/Javie/OneDrive/Escritorio/PROGRAMACIÓN II/programa-II/Proyecto")
 
 library(dplyr)
 library(tidyr)
@@ -44,7 +44,7 @@ params <- tibble::tribble(
 
 getwd()
 
-df <- read_excel("output/indicadores_acceso_tecnologico.xlsx")
+df <- read_excel()
 
 # 2) Función distancia-a-meta (0–100 con recorte)
 score_target <- function(x, better, F, T) {
