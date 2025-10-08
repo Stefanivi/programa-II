@@ -1,0 +1,150 @@
+---
+  title: "Información base proyecto"
+format:
+  revealjs:
+  theme: dracula
+slide-number: true
+transition: slide
+css: styles.css
+date: "2025-10-07"
+execute:
+  echo: true
+eval: false  
+code-copy: true
+code-overflow: wrap
+code-line-numbers: true
+---
+  
+  ## Introducción
+  
+  El proyecto consiste en la **construcción de un índice de desarrollo tecnológico regional**, que muestre el estado actual del desarrollo tecnológico en el país y las brechas sociales en este aspecto; entendiendo que la tecnología en la era moderna es un pilar fundamental para el desarrollo económico y social.
+
+---
+  
+  ## Relevancia del proyecto
+  
+  Construir un índice de desarrollo tecnológico regional en Guatemala es fundamental para **identificar y reducir las desigualdades territoriales** en acceso, uso e infraestructura digital. Este tipo de medición permite conocer cómo se distribuye la conectividad entre departamentos, entendiendo que la expansión de la banda ancha impulsa la productividad y la competitividad nacional.
+
+---
+  
+  ## estructura básica del proyecto
+  ![](Flujo.jpg)
+
+
+## Fuentes de información
+
+- **Instituto Nacional de Estadística (INE)** — *Encuesta Nacional de Condiciones de Vida (ENCOVI)*  
+  - Bases: Hogares y Personas  
+- **Superintendencia de Telecomunicaciones (SIT)** — *Información sobre radiobases y líneas fijas*  
+  - **Fundación para el Desarrollo de Guatemala (FUNDESA)** — *PIB per cápita departamental*  
+  
+  ---
+  
+  ## Extracción y limpieza de datos
+  
+  El proceso inició con la carga y depuración de las bases **ENCOVI**, donde:
+  
+  - Se seleccionaron únicamente las variables relevantes.  
+- Se renombraron las variables para facilitar su interpretación.  
+- Se homologaron los tipos de datos de las claves departamentales.  
+- Se filtraron los registros de equipamiento para conservar solo los hogares con computadora.  
+- Finalmente, se realizó una unión entre ambas bases para obtener una tabla consolidada de hogares con variables de conectividad y equipamiento tecnológico.  
+
+```{r} 
+# Carga y selección de variables relevantes
+hogares <- read_excel("./input/ENCOVI_hogares.xlsx") %>%
+  select(DEPTO, AREA, FACTOR, NO_HOGAR, P01D20D, P01D20C)
+
+equipamiento <- read_excel("./input/Equipamiento.xlsx") %>%
+  select(DEPTO, AREA, FACTOR, NO_HOGAR, P01J01A, DESC_EQUIPA)
+
+# Renombrar variables y estandarizar tipos
+hogares <- hogares %>%
+  rename(depto = DEPTO, area = AREA, factor = FACTOR,
+         no_hogar = NO_HOGAR, internet_residencial = P01D20D,
+         telefono_celular = P01D20C) %>%
+  mutate(across(c(depto, area, no_hogar), as.character))
+
+# Filtrar hogares con computadora
+equipamiento <- equipamiento %>%
+  filter(tiene_equipamiento == 1 &
+           str_detect(DESC_EQUIPA, "Computadora", ignore_case = TRUE)) %>%
+  group_by(depto, area, factor, no_hogar) %>%
+  summarise(desc_equip = paste(unique(DESC_EQUIPA), collapse = " y ")) %>%
+  ungroup()
+
+# Unión final y exportación
+base_final <- left_join(hogares, equipamiento,
+                        by = c("depto", "area", "factor", "no_hogar"))
+write_csv(base_final, "./output/hogares_clean.csv")
+```
+
+---
+  
+  ## Cálculo de indicadores
+  
+  Con las bases depuradas, se procedió a calcular los **indicadores de conectividad** por departamento:
+  
+  ```{r}
+
+# Personas
+uso_intern <- datos |> group_by(depto) |>
+  summarise(total_resp = sum(factor, na.rm=TRUE),
+            usan_intern = sum(if_else(uso_internet==1, factor, 0), na.rm=TRUE),
+            .groups="drop") |>
+  mutate(var_uso_intern = round(100 * usan_intern/total_resp, 2))
+
+uso_intern_mujeres <- datos |> group_by(depto) |>
+  summarise(total_resp = sum(factor, na.rm=TRUE),
+            usan_intern_mujeres = sum(if_else(uso_internet==1 & sexo==2, factor, 0), na.rm=TRUE),
+            .groups="drop") |>
+  mutate(var_uso_intern_mujeres = round(100 * usan_intern_mujeres/total_resp, 2))
+
+acceso_tel_mov <- datos |> group_by(depto) |>
+  summarise(total_resp = sum(factor, na.rm=TRUE),
+            pers_con_mov = sum(if_else(tiene_celular==1, factor, 0), na.rm=TRUE),
+            .groups="drop") |>
+  mutate(var_uso_acceso_tel_mov = round(100 * pers_con_mov/total_resp, 2))
+
+poblacion_rural <- datos |> group_by(depto) |>
+  summarise(total_resp = sum(factor, na.rm=TRUE),
+            pobl_rural = sum(if_else(area==2, factor, 0), na.rm=TRUE),
+            .groups="drop") |>
+  mutate(pct_rural = round(100 * pobl_rural/total_resp, 2))
+
+# Hogares
+hogares_internet <- hogares_clean |> group_by(depto) |>
+  summarise(total_resp = sum(factor, na.rm=TRUE),
+            hogares_internet = sum(if_else(internet_residencial==1, factor, 0), na.rm=TRUE),
+            .groups="drop") |>
+  mutate(propor_hogares_internet = round(100 * hogares_internet/total_resp, 2))
+
+hogares_compu <- hogares_clean |> group_by(depto) |>
+  summarise(total_resp = sum(factor, na.rm=TRUE),
+            hogares_compu = sum(if_else(tiene_equipamiento==1, factor, 0), na.rm=TRUE),
+            .groups="drop") |>
+  mutate(propor_hogares_computadora = round(100 * hogares_compu/total_resp, 2))
+
+# Radiobases / Líneas / PIB
+df_radio_pib <- left_join(datos_rb, datos_pib, join_by(departamento)) |>
+  mutate(rb_por_100k = round(radiobases_2023 / poblacion * 1e5, 2),
+         lineas_por_1k = round(lineas_fijas_2023 / poblacion * 1e3, 2),
+         pib_per_capita = round(PIB_per_capita, 2)) |>
+  select(departamento, rb_por_100k, lineas_por_1k, pib_per_capita) |>
+  rename(depto = departamento)
+```
+
+---
+  
+  ## Resultados esperados
+  
+  El resultado de este proceso será un conjunto de **indicadores normalizados** que servirán como base para la construcción del **Índice de Brecha Regional de Conectividad (IBRC)**, el cual permitirá visualizar la desigualdad tecnológica entre departamentos en Guatemala.
+
+---
+  
+  
+  ## Autoría y contexto
+  
+  **Autores:** Paulo Garrido, Stefani Villeda, 
+**Curso:** Programación II – Proyecto ICBH  
+**Fecha de actualización:** 7 de octubre de 2025
