@@ -1,0 +1,153 @@
+---
+title: "PS5"
+format: pdf
+editor: visual
+---
+
+Programación II\
+Programa de Estudios Superiores\
+Banco de Guatemala\
+2025
+
+**Integrantes:**\
+
+
+-   Paulo Augusto Garrido Grijalva
+-   Stefani María Villeda Guerra
+-   Luis Daniel Monroy Rojas
+-   David Javier García Sutuj
+
+***Preparación de workspace***
+
+```{r, warning=FALSE, message=FALSE}
+rm(list=ls())
+graphics.off()
+setwd("/Users/stefanivilleda/Desktop/Programación II/Day_6/PS5")
+
+```
+
+***Problema de ahorro óptimo***
+
+1.  Escriba un programa que encuentre la senda óptima de $C_t$ y $A_t$ de Leo Messi a lo largo de su vida, dadas unas sendas de ingreso $\{Y_t\}_{t=0}^T$, un valor para la tasa de interés bruta R y un valor de $\phi$.
+
+2.  Asuma que $Y_t$ = $\bar{Y}$ = 1 para todo t y que $\phi$ → ∞. En una misma gráfica, muestre las sendas de $C_t$ y $A_t$ cuando
+
+<!-- -->
+
+a)  $R=\frac{1}{\beta}$
+b)  $R=\frac{1}{\beta}-0.02$
+c)  $R=\frac{1}{\beta}+0.02$
+
+<!-- -->
+
+3.  Asuma que Argentina ha declarado default (como siempre), por lo que Leo ya no cuenta con acceso a los mercados de deuda. Esto es, $\phi$ = 0. Asuma de nuevo que $Y_t$ = $\bar{Y}$= 1 y muestre, en una misma gráfica, las sendas de Ct y At cuando
+
+<!-- -->
+
+a)  $R=\frac{1}{\beta}$
+b)  $R=\frac{1}{\beta}-0.02$
+c)  $R=\frac{1}{\beta}+0.02$
+
+***Elección Estocástica***
+
+*Modelo de utilidad estocástica (RUM)*
+
+```{r funciones}
+## utilidad CRRA para la lotería riesgosa x pero r no puede ser 1
+U_x <- function(r) {
+    (0.9 + 0.1 * 60^(1 - r)) / (1 - r)   # porque 1^(1-r) = 1
+}
+
+# Lotería de y segura, pero r no puee ser 1
+U_y <- function(r) {
+    5^(1 - r) / (1 - r)
+}
+
+# Prob(elegir x) bajo RUM Normal, pero r no puede ser 1
+prob_x_rum <- function(r) {
+    pnorm( (U_x(r) - U_y(r)) / sqrt(2) )
+}
+
+```
+
+(a) Calcule la probabilidad de que el grupo de individuos elija la lotería riesgosa x, para un valor de r = 2.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+r <- 2
+p_a <- prob_x_rum(r)
+cat("--- Modelo de Utilidad Estocástica (RUM) ---\n")
+cat("1(a): La probabilidad de elegir la lotería riesgosa 'x' con r =", r, "es:", round(p_a, 4), "\n\n")
+```
+
+\newpage
+(b) Grafique la anterior probabilidad para diferentes valores r ∈ \[0, 10\].
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+## Construir los datos de r en [0,10] y excluir r = 1
+r_valores <- seq(0, 10, by = 0.01)
+r_valores <- r_valores[r_valores != 1]   # tus U_x y U_y no valen en r = 1
+
+## Calcular la probabilidad P(x) para cada r != 1 
+probabilidad <- prob_x_rum(r_valores)    # vectorizado
+
+## Calcular el punto en r = 1 usando el límite (forma log)
+Ux1 <- 0.1 * log(60)            # = 0.9*log(1) + 0.1*log(60)
+Uy1 <- log(5)
+p_r1 <- pnorm( (Ux1 - Uy1) / sqrt(2) )
+
+##Graficar la curva 
+plot(r_valores, probabilidad,
+     xlab = "Parámetro de aversión al riesgo (r)",
+     ylab = "Probabilidad de elegir x",
+     main = "Probabilidad de elegir la lotería riesgosa",
+     ylim = c(0, 1))
+```
+
+*Modelo de parámetros estocásticos (RPM)*
+
+(a) Calcule la probabilidad de que el grupo de individuos elija la lotería riesgosa x, para un valor de r = 2.
+
+```{r funcion}
+# funciones (r no es igual 1) 
+U_x <- function(r) { (0.9 + 0.1 * 60^(1 - r)) / (1 - r) }
+U_y <- function(r) { 5^(1 - r) / (1 - r) }
+
+# diferencia de utilidades
+dU <- function(r) U_x(r) - U_y(r)
+
+# (a)probabilidad de elegir x cuando r = 2
+r_media <- 2
+
+#raíz r* donde U_x(r) = U_y(r)  (está a la izquierda de 1)
+r_star <- uniroot(dU, interval = c(1e-6, 0.999999))$root
+
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# a) Probabilidad RPM de elegir x con media r = 2
+prob_RPM_a <- pnorm(r_star - r_media)
+
+cat("--- Modelo de Parámetros Estocásticos (RPM) ---\n")
+cat("2(a): La probabilidad de elegir la lotería riesgosa 'x' con una media de r =", r_media, "es:", round(prob_RPM_a, 4), "\n\n")
+
+```
+\newpage
+
+(b) Grafique la anterior probabilidad para diferentes valores r ∈ \[0, 10\].
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+#b) Grafique la anterior probabilidad para diferentes valores r ∈ [0, 10]
+# valores de medias
+mu_valores <- seq(0, 10, by = 0.1)
+
+# prob exacta: P(x) = Phi(r* - mu)
+prob <- pnorm(r_star - mu_valores)
+
+# gráfico
+plot(mu_valores, prob,
+     type= "l",
+     xlab = "Media de r", ylab = "Probabilidad",
+     main = "Probabilidad de elegir x",
+     ylim = c(0, 1)) 
+
+```
