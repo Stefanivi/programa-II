@@ -29,17 +29,27 @@ telefonia  <- read_excel("./input/Telefonía fija.xlsx")
 # ============================
 # 2) para limpiar depto
 # ============================
-# Quita tildes (via iconv), borra apóstrofes, compacta espacios y pone Title Case
+# Quita tildes (via iconv), borra apóstrofes, compacta espacios y pone sin acentos ni apostrofes
+?stringr
+?iconv
+#iconv(x, from = "", to = "", sub = NA, mark = TRUE, toRaw = FALSE)
+#https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/iconv
+
+
 to_title_no_accents <- function(x){
     x %>%
         iconv(to = "ASCII//TRANSLIT") %>%      # "Quiché" -> "Quiche", "Petén" -> "Peten"
+        # 2) Elimina apóstrofes y comillas 
         str_replace_all("[`´'’‘]", "") %>%      # "Pet'en" -> "Peten"
+        # 3) Pasa todo a minúsculas para normalizar
         tolower() %>%
+        # 4) Compacta espacios:
         str_squish() %>%
+        # 5) Aplica el title que a cada palabra inicia en mayúscula, resto minúsculas
         str_to_title()
 }
 
-# Casos especiales y filas basura 
+# Casos especiales y filas que no utilizo 
 fix_special_deptos <- function(dep){
     dep %>%
         str_replace(regex("^El\\s+", ignore_case = TRUE), "") %>%  # "El Peten" -> "Peten"
@@ -87,7 +97,7 @@ telefonia_2023 <- telefonia %>%
     mutate(
         departamento      = to_title_no_accents(departamento),
         departamento      = fix_special_deptos(departamento),
-        lineas_fijas_2023 = suppressWarnings(as.numeric(lineas_fijas_2023))
+        lineas_fijas_2023 = as.numeric(lineas_fijas_2023)
     ) %>%
     filter(!is.na(departamento), departamento != "Total") %>%
     group_by(departamento) %>%
